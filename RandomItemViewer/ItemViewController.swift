@@ -1,12 +1,13 @@
 import UIKit
 
-class ViewController: UIViewController, ItemDeleter {
+class ItemViewController: UIViewController, ItemDeleter {
     enum Section {
         case main
     }
     
-    var items: [Item] = []
     var dataSource: UICollectionViewDiffableDataSource<Section, Item>!
+    
+    weak var coordinator: ItemCoordinator?
     
     let collectionView: UICollectionView = {
         let itemSize = NSCollectionLayoutSize(
@@ -28,8 +29,18 @@ class ViewController: UIViewController, ItemDeleter {
         return view
     }()
 
+    init() {
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
+    
         super.viewDidLoad()
+    
         
         let registration = UICollectionView.CellRegistration<ItemCell, Item> { cell, indexPath, item in
             cell.configure(item)
@@ -54,37 +65,14 @@ class ViewController: UIViewController, ItemDeleter {
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addItem))
         
         title = "Random Item Viewer"
-        
-        items = []
-        for _ in 0...Int.random(in: 0...8) {
-            items.append(createRandomItem())
-        }
-        applySnapshot()
+        self.coordinator?.viewDidLoad()
     }
     
     @objc func addItem() {
-        items.append(createRandomItem())
-        applySnapshot()
+        self.coordinator?.addItem()
     }
     
     func delete(item: Item) {
-        self.items = self.items.filter( { $0 != item })
-        applySnapshot()
-    }
-    
-    func createRandomItem() -> Item {
-        var desc: String = ""
-        let random = Int.random(in: 0...20)
-        for _ in 0...random {
-            desc += "word "
-        }
-        return Item(title: "RANDOM ITEM", description: desc)
-    }
-    
-    func applySnapshot() {
-        var snapshot = NSDiffableDataSourceSnapshot<Section, Item>()
-        snapshot.appendSections([.main])
-        snapshot.appendItems(items)
-        dataSource.apply(snapshot, animatingDifferences: true)
+        self.coordinator?.delete(item: item)
     }
 }
