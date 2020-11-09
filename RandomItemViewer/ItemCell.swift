@@ -11,6 +11,7 @@ class ItemCell: UICollectionViewCell {
         label.font = .preferredFont(forTextStyle: .title1)
         label.textColor = .label
         label.numberOfLines = 1
+        label.text = ""
         return label
     }()
     
@@ -20,6 +21,7 @@ class ItemCell: UICollectionViewCell {
         label.font = .preferredFont(forTextStyle: .body)
         label.textColor = .label
         label.numberOfLines = 0
+        label.text = ""
         return label
     }()
     
