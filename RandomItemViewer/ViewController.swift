@@ -54,22 +54,31 @@ class ViewController: UIViewController, ItemDeleter {
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addItem))
         
         title = "Random Item Viewer"
+        
+        items = []
+        for _ in 0...Int.random(in: 0...8) {
+            items.append(createRandomItem())
+        }
+        applySnapshot()
     }
     
     @objc func addItem() {
-        var desc: String = ""
-        let random = Int.random(in: 0...20)
-        for _ in 0...random {
-            desc += "word "
-        }
-        let item = Item(title: "RANDOM ITEM", description: desc)
-        items.append(item)
+        items.append(createRandomItem())
         applySnapshot()
     }
     
     func delete(item: Item) {
         self.items = self.items.filter( { $0 != item })
         applySnapshot()
+    }
+    
+    func createRandomItem() -> Item {
+        var desc: String = ""
+        let random = Int.random(in: 0...20)
+        for _ in 0...random {
+            desc += "word "
+        }
+        return Item(title: "RANDOM ITEM", description: desc)
     }
     
     func applySnapshot() {
